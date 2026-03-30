@@ -171,22 +171,50 @@ print(df.head(10))
 df.to_csv("reporte_general.csv", index=False)
 print("📁 Archivo guardado en Tienda Ropa")
 
+import os
+from datetime import datetime
 import matplotlib.pyplot as plt
+
+# Crear carpeta
+os.makedirs("graficos", exist_ok=True)
 
 # Asegurar que producto sea texto
 df["producto"] = df["producto"].astype(str)
-
-# Reemplazar productos vacíos o 0
 df["producto"] = df["producto"].replace("0", "SIN NOMBRE")
 
+fecha = datetime.now().strftime("%Y-%m-%d")
 
-# TOP productos por ganancia
 top = df.head(10)
 
+# ========================
+# 🔥 GRÁFICO 1: TOP PRODUCTOS
+# ========================
 plt.figure()
 plt.bar(top["producto"], top["ganancia"])
 plt.xticks(rotation=45)
 plt.title("Top 10 productos más rentables")
 plt.tight_layout()
-plt.show()
-df["producto"] = df["producto"].replace(0, "SIN DATA")
+plt.savefig(f"graficos/top_productos_{fecha}.png")
+plt.close()
+
+# ========================
+# 🔥 GRÁFICO 2: VENTAS VS STOCK
+# ========================
+plt.figure()
+plt.scatter(df["stock"], df["total_vendido"])
+plt.xlabel("Stock")
+plt.ylabel("Ventas")
+plt.title("Ventas vs Stock")
+plt.savefig(f"graficos/ventas_stock_{fecha}.png")
+plt.close()
+
+# ========================
+# 🔥 GRÁFICO 3: RENTABILIDAD
+# ========================
+plt.figure()
+plt.bar(top["producto"], top["ganancia"])
+plt.xticks(rotation=45)
+plt.title("Rentabilidad por producto")
+plt.tight_layout()
+plt.savefig(f"graficos/rentabilidad_{fecha}.png")
+plt.close()
